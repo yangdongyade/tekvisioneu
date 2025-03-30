@@ -3,36 +3,23 @@ export default {
     const { pathname } = new URL(request.url);
     const country = request.cf?.country || "Unknown";
 
-    // 🚫 拦截来自新加坡、新增香港和中国大陆的请求
-    const blockedCountries = ["SG", "HK"];
+    const blockedKeywords = [
+      "escort", "massage", "dogging", "sex", "piger", "taletidskort", "menukort"
+    ];
+
+    // 拦截特定国家
+    const blockedCountries = ["SG", "CN", "HK"];
     if (blockedCountries.includes(country)) {
       return new Response("Access denied (Geo blocked)", { status: 403 });
     }
 
-    // 🛑 拦截包含关键词的 URL
-    const blockedKeywords = [
-      "escort",
-      "massage",
-      "dogging",
-      "sex",
-      "piger",
-      "taletidskort",
-      "menukort"
-    ];
-
+    // 拦截关键词
     const lowerPath = pathname.toLowerCase();
-    for (let keyword of blockedKeywords) {
-      if (lowerPath.includes(keyword)) {
-        return new Response("Blocked due to suspicious content.", { status: 403 });
-      }
+    if (blockedKeywords.some(keyword => lowerPath.includes(keyword))) {
+      return new Response("Blocked due to suspicious content.", { status: 403 });
     }
 
-    // ✅ 正常请求通过
-    return new Response("Access granted.", {
-      status: 200,
-      headers: {
-        "content-type": "text/plain"
-      }
-    });
+    // ✅ 其他请求转发回源站（Shopify）
+    return fetch(request);
   }
 };
