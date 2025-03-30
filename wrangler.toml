@@ -1,0 +1,6 @@
+name = "tekvisioneu"
+type = "javascript"
+account_id = "25e5cf5d48f63b33a6cfe85375afe528"
+workers_dev = true
+compatibility_date = "2025-03-30"
+main = "worker.js"
