@@ -5,7 +5,7 @@ export default {
 
     // ✅ Worker 测试路径，验证是否运行
     if (url.pathname === "/test") {
-      return new Response("✅ Worker 正常运行", {
+      return new Response("✅ Worker works normal", {
         status: 200,
         headers: {
           "Content-Type": "text/plain"
