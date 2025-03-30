@@ -1,28 +1,28 @@
 export default {
   async fetch(request, env, ctx) {
-    const { pathname } = new URL(request.url);
+    const url = new URL(request.url);
     const country = request.cf?.country || "Unknown";
-
-    // 被拦截的国家列表
     const blockedCountries = ["SG", "CN", "HK"];
+    const blockedKeywords = ["escort", "massage", "dogging", "sex", "piger", "taletidskort", "menukort"];
 
-    // 被拦截的关键词
-    const blockedKeywords = [
-      "escort", "massage", "dogging", "sex", "piger", "taletidskort", "menukort"
-    ];
+    // 🌐 重定向根域名到 www
+    if (url.hostname === "tekvision.eu") {
+      url.hostname = "www.tekvision.eu";
+      return Response.redirect(url.toString(), 301);
+    }
 
-    // 🚫 拦截来自指定国家
+    // 🚫 屏蔽国家
     if (blockedCountries.includes(country)) {
       return new Response("Access denied (Geo blocked)", { status: 403 });
     }
 
-    // 🚫 拦截包含非法关键词的路径
-    const lowerPath = pathname.toLowerCase();
+    // 🚫 拦截关键词路径
+    const lowerPath = url.pathname.toLowerCase();
     if (blockedKeywords.some(keyword => lowerPath.includes(keyword))) {
       return new Response("Blocked due to suspicious content.", { status: 403 });
     }
 
-    // ✅ 所有其他请求，转发给 Shopify
+    // ✅ 正常通过，继续访问 Shopify 页面
     return fetch(request);
   }
 };
