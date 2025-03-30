@@ -5,14 +5,14 @@ export default {
 
     const blockedCountries = ["SG", "CN", "HK"];
     const blockedKeywords = [
-      "escort", "massage", "dogging", "sex", "piger", 
+      "escort", "massage", "dogging", "sex", "piger",
       "taletidskort", "menukort", "sex-toy"
     ];
 
-    // 👉 根域名跳转到 www
+    // 👇 强制裸域名重定向到 www（使用 302 防止缓存）
     if (url.hostname === "tekvision.eu") {
       url.hostname = "www.tekvision.eu";
-      return Response.redirect(url.toString(), 301);
+      return Response.redirect(url.toString(), 302);
     }
 
     // ❌ 屏蔽国家
@@ -26,7 +26,7 @@ export default {
       return new Response("Blocked due to suspicious content.", { status: 403 });
     }
 
-    // ✅ 正常访问
+    // ✅ 正常请求
     return fetch(request);
   }
-}
+};
