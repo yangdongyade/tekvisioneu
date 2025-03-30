@@ -3,8 +3,9 @@ export default {
     const { pathname } = new URL(request.url);
     const country = request.cf?.country || "Unknown";
 
-    // 🚫 拦截来自新加坡的请求
-    if (country === "SG") {
+    // 🚫 拦截来自新加坡、新增香港和中国大陆的请求
+    const blockedCountries = ["SG", "HK", "CN"];
+    if (blockedCountries.includes(country)) {
       return new Response("Access denied (Geo blocked)", { status: 403 });
     }
 
